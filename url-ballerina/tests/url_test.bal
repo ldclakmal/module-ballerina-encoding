@@ -169,3 +169,24 @@ isolated function testInvalidDecode() {
         test:assertFail(msg = "Expected {ballerina/url}Error not found.");
     }
 }
+
+@test:Config {}
+isolated function testBase64Encode() {
+    string input = "Ballerina Base64 URL encoding test";
+    string expectedValue = "QmFsbGVyaW5hIEJhc2U2NCBVUkwgZW5jb2RpbmcgdGVzdA";
+    string result = base64Encode(input.toBytes());
+    test:assertEquals(result, expectedValue, msg = "Unexpected Base64 encoding.");
+}
+
+@test:Config {}
+isolated function testBase64Decode() {
+    string input = "QmFsbGVyaW5hIEJhc2U2NCBVUkwgZW5jb2RpbmcgdGVzdA";
+    string encodedString = "Ballerina Base64 URL encoding test";
+    byte[]|Error result = base64Decode(input);
+    if (result is byte[]) {
+        byte[] expectedBytes = encodedString.toBytes();
+        test:assertEquals(result, expectedBytes, msg = "Unexpected Base64 decoding.");
+    } else {
+        test:assertFail(msg = "Unexpected results while Base64 decoding. " + result.message());
+    }
+}
