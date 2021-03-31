@@ -19,10 +19,13 @@
 package org.ballerinalang.stdlib.url.nativeimpl;
 
 import io.ballerina.runtime.api.utils.StringUtils;
+import io.ballerina.runtime.api.values.BArray;
 import io.ballerina.runtime.api.values.BString;
 import org.ballerinalang.stdlib.url.UrlUtils;
 
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 /**
  * Extern functions of URL encoding.
@@ -55,5 +58,10 @@ public class Encode {
         } catch (Throwable e) {
             return UrlUtils.createError("Error occurred while encoding. " + e.getMessage());
         }
+    }
+
+    public static BString base64Encode(BArray input) {
+        byte[] encodedValue = Base64.getUrlEncoder().withoutPadding().encode(input.getBytes());
+        return StringUtils.fromString(new String(encodedValue, StandardCharsets.ISO_8859_1));
     }
 }

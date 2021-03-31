@@ -18,12 +18,14 @@
 
 package org.ballerinalang.stdlib.url.nativeimpl;
 
+import io.ballerina.runtime.api.creators.ValueCreator;
 import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.values.BString;
 import org.ballerinalang.stdlib.url.UrlUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.Base64;
 
 /**
  * Extern functions of URL decoding.
@@ -37,6 +39,15 @@ public class Decode {
             return StringUtils.fromString(URLDecoder.decode(str.getValue(), charset.getValue()));
         } catch (UnsupportedEncodingException e) {
             return UrlUtils.createError("Error occurred while decoding. " + e.getMessage());
+        }
+    }
+
+    public static Object base64Decode(BString input) {
+        try {
+            byte[] output = Base64.getUrlDecoder().decode(input.getValue());
+            return ValueCreator.createArrayValue(output);
+        } catch (IllegalArgumentException e) {
+            return UrlUtils.createError("Input is not a valid Base64 URL encoded value. " + e.getMessage());
         }
     }
 }
